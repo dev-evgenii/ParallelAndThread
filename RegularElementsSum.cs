@@ -10,11 +10,15 @@ public static class RegularElementsSum
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        var numbersRangeSum = Enumerable.Range(startElement, endElement).Select(i => (BigInteger)i)
-                                        .Aggregate((i, j) => i + j);
+        BigInteger totalSum = 0;
+        var numbersRange = Enumerable.Range(startElement, endElement).ToArray();
 
+        for ( var j = 0; j < numbersRange.Length; j++)
+        {
+            totalSum += numbersRange[j];
+        }
+    
         stopwatch.Stop();
-        Console.WriteLine($"Элементов: {endElement}.  Сумма: {numbersRangeSum}. Время выполнения: {stopwatch.ElapsedMilliseconds} мс.");
-        stopwatch.Stop();
+        Console.WriteLine($"Элементов: {endElement}.  Сумма: {totalSum}. Время выполнения: {stopwatch.ElapsedMilliseconds} мс.");        
     }
 }

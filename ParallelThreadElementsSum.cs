@@ -10,17 +10,38 @@ public static class ParallelThreadElementsSum
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        var numbersRange = Enumerable.Range(startElement, endElement);      
-        object sync = new();
-        BigInteger numbersRangeSum = 0;
+        var numbersRange = Enumerable.Range(startElement, endElement).ToArray();
 
-        Parallel.ForEach(numbersRange, number =>
+        int threadAmount = CalculateRequiredNumberOfThreads(endElement);
+        int arraySizeInThread = endElement / threadAmount;
+        BigInteger[] partialSum = new BigInteger[arraySizeInThread];
+        BigInteger totalSum = 0;
+
+        Parallel.For(0, threadAmount, (counter) =>
         {
-            lock (sync)
-                numbersRangeSum += number;            
+            BigInteger sum = 0;
+            for (int i = counter * arraySizeInThread; i < (counter + 1) * arraySizeInThread; i++)
+                sum += numbersRange[i];
+
+            partialSum[counter] = sum;
         });
 
-        Console.WriteLine($"Элементов: {endElement}. Сумма: {numbersRangeSum}. Время выполнения: {stopwatch.ElapsedMilliseconds} мс.");
+        foreach (var item in partialSum)
+        {
+            totalSum += item;
+        }
+
         stopwatch.Stop();
+        Console.WriteLine($"Элементов: {endElement}. Сумма: {totalSum}. Время выполнения: {stopwatch.ElapsedMilliseconds} мс.");
+    }
+
+    private static int CalculateRequiredNumberOfThreads(int elementsCount)
+    {
+        int threadAmount = 1;
+
+        if (elementsCount > 100_000)
+            threadAmount = 5;
+
+        return threadAmount;
     }
 }

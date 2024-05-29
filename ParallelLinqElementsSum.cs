@@ -14,9 +14,8 @@ public static class ParallelLinqElementsSum
                                                .AsParallel()
                                                .Select(i => (BigInteger)i)
                                                .Aggregate((i, j) => i + j);
-
-        Console.WriteLine($"Элементов: {endElement}. Сумма: {numbersRangeSum}. Время выполнения: {stopwatch.ElapsedMilliseconds} мс.");
+  
         stopwatch.Stop();
+        Console.WriteLine($"Элементов: {endElement}. Сумма: {numbersRangeSum}. Время выполнения: {stopwatch.ElapsedMilliseconds} мс.");        
     }
-
 }
